@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Soil AI</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .logo-img {
+            width: 50px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <img src="assets/logo.png" alt="Soil AI Logo" class="logo-img">
+            <span>Soil <span>AI Analyzer</span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="api.html">APIs</a></li>
+                <li><a href="plans.html">Plans</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li id="nav-auth-links">
+                    <a href="signup.html" class="primary-btn nav-login" id="nav-signup-btn">Signup</a>
+                </li>
+                <li id="nav-user-profile" class="user-profile hidden">
+                    <div class="profile-trigger">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="nav-username">User</span>
+                        <i class="fas fa-chevron-down" style="font-size: 0.7rem; opacity: 0.5;"></i>
+                    </div>
+                    <div class="profile-dropdown">
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="fas fa-user-edit"></i> My Profile
+                        </a>
+                        <a href="plans.html" class="dropdown-item">
+                            <i class="fas fa-crown"></i> Soil AI Plans
+                        </a>
+                        <a href="dashboard.html" class="dropdown-item">
+                            <i class="fas fa-chart-line"></i> Analysis History
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item logout-btn" id="logout-link">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="auth-wrapper">
+        <div class="auth-card animate-up">
+            <h2>Welcome Back</h2>
+            <p>Login to access your soil analysis reports</p>
+
+            <div id="login-alert" class="alert alert-error"></div>
+
+            <form id="login-form">
+                <div class="form-group">
+                    <label>Username</label>
+                    <input type="text" id="login-username" placeholder="Enter username" required>
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="login-password" placeholder="••••••••" required>
+                </div>
+                <div style="text-align: right; margin-bottom: 2rem;">
+                    <a href="forgot-password.html"
+                        style="color: var(--accent-color); font-size: 0.9rem; text-decoration: none;">Forgot
+                        Password?</a>
+                </div>
+                <button type="submit" class="primary-btn" style="width: 100%;">
+                    <span class="btn-text">Login</span>
+                    <span class="loader hidden"></span>
+                </button>
+            </form>
+
+            <div class="auth-footer">
+                Don't have an account? <a href="signup.html">Create Account</a>
+            </div>
+        </div>
+    </main>
+
+    <script src="script.js"></script>
+    <script>
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button');
+            const loader = btn.querySelector('.loader');
+            const alert = document.getElementById('login-alert');
+
+            btn.disabled = true;
+            loader.classList.remove('hidden');
+            alert.style.display = 'none';
+
+            const formData = new URLSearchParams();
+            formData.append('username', document.getElementById('login-username').value);
+            formData.append('password', document.getElementById('login-password').value);
+
+            try {
+                const response = await fetch('/api/token', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('soil_ai_token', data.access_token);
+                    localStorage.setItem('soil_ai_user', document.getElementById('login-username').value);
+                    window.location.href = 'index.html';
+                } else {
+                    alert.textContent = data.detail || 'Login failed';
+                    alert.style.display = 'block';
+                }
+            } catch (err) {
+                alert.textContent = 'Server connection error';
+                alert.style.display = 'block';
+            } finally {
+                btn.disabled = false;
+                loader.classList.add('hidden');
+            }
+        });
+    </script>
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="Soil AI Logo" class="logo-img">
+                    <span>Soil <span>AI</span></span>
+                </div>
+                <p class="mt-20">Advanced AI-powered soil analysis for precision agriculture. Empowering the future of
+                    farming.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="plans.html">Pricing Plans</a></li>
+                    <li><a href="api.html">API Docs</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="/api/admin/login">Admin Login</a></li>
+                    <li><a href="contact.html">Help Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p>Get the latest agriculture AI updates.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email">
+                    <button type="button"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Soil AI. All rights reserved.</p>
+            <p>Built with <i class="fas fa-heart" style="color: var(--accent-color)"></i> for Precision Farming</p>
+        </div>
+    </footer>
+</body>
+
+</html>

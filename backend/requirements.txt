@@ -1,0 +1,9 @@
+flask
+flask-sqlalchemy
+flask-login
+flask-bcrypt
+flask-jwt-extended
+flask-cors
+pillow
+ultralytics
+python-multipart

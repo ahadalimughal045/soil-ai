@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soil AI Analyzer | Precision Agriculture</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+        .logo-img {
+            width: 50px !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+        <div class="blob blob-3"></div>
+    </div>
+
+    <header>
+        <div class="logo">
+            <img src="assets/logo.png" alt="Soil AI Logo" class="logo-img">
+            <span>Soil <span>AI Analyzer</span></span>
+        </div>
+        <nav>
+            <ul>
+                <li><a href="index.html" class="active">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="api.html">APIs</a></li>
+                <li><a href="plans.html">Plans</a></li>
+                <li><a href="contact.html">Contact</a></li>
+                <li id="nav-auth-links">
+                    <a href="login.html" class="primary-btn nav-login" id="nav-login-btn">Login</a>
+                </li>
+                <li id="nav-user-profile" class="user-profile hidden">
+                    <div class="profile-trigger">
+                        <i class="fas fa-user-circle"></i>
+                        <span id="nav-username">User</span>
+                        <i class="fas fa-chevron-down" style="font-size: 0.7rem; opacity: 0.5;"></i>
+                    </div>
+                    <div class="profile-dropdown">
+                        <a href="profile.html" class="dropdown-item">
+                            <i class="fas fa-user-edit"></i> My Profile
+                        </a>
+                        <a href="plans.html" class="dropdown-item">
+                            <i class="fas fa-crown"></i> Soil AI Plans
+                        </a>
+                        <a href="dashboard.html" class="dropdown-item">
+                            <i class="fas fa-chart-line"></i> Analysis History
+                        </a>
+                        <div class="dropdown-divider"></div>
+                        <a href="#" class="dropdown-item logout-btn" id="logout-link">
+                            <i class="fas fa-sign-out-alt"></i> Logout
+                        </a>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="hero">
+            <h1 class="animate-up">Revolutionizing <span>Agriculture</span> with AI</h1>
+            <p class="animate-up delay-1">Upload a soil image and let our deep learning models analyze its composition,
+                pH levels, and nutrient content in real-time.</p>
+
+            <div class="upload-container animate-up delay-2">
+                <div id="drop-zone" class="drop-zone">
+                    <div class="drop-content">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                        <p>Drag & drop soil image or <span>Browse</span></p>
+                        <input type="file" id="file-input" accept="image/*" hidden>
+                    </div>
+                    <div id="preview-container" class="preview-container hidden">
+                        <img id="image-preview" src="" alt="Soil Sample">
+                        <button id="remove-img"><i class="fas fa-times"></i></button>
+                    </div>
+                </div>
+                <button id="analyze-btn" class="primary-btn" disabled>
+                    <span class="btn-text">Analyze Soil Sample</span>
+                    <span class="loader hidden"></span>
+                </button>
+            </div>
+        </section>
+
+        <section id="results-section" class="results-section hidden">
+            <h2 class="section-title">Analysis Results</h2>
+            <div class="results-grid">
+                <div class="result-card main-card">
+                    <div class="card-icon"><i class="fas fa-layer-group"></i></div>
+                    <div class="card-info">
+                        <h3>Soil Type & Health</h3>
+                        <p><span id="res-soil-type">Analyzing...</span> | <span id="res-score"
+                                class="score-text">--</span></p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-microscope"></i></div>
+                    <div class="card-info">
+                        <h3>Texture</h3>
+                        <p id="res-texture">--</p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-vial"></i></div>
+                    <div class="card-info">
+                        <h3>pH Level</h3>
+                        <p id="res-ph">--</p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-flask"></i></div>
+                    <div class="card-info">
+                        <h3>Nitrogen (N)</h3>
+                        <p id="res-nitrogen">--</p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-flask-vial"></i></div>
+                    <div class="card-info">
+                        <h3>Phosphorus (P)</h3>
+                        <p id="res-phosphorus">--</p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-wine-glass-empty"></i></div>
+                    <div class="card-info">
+                        <h3>Potassium (K)</h3>
+                        <p id="res-potassium">--</p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-leaf"></i></div>
+                    <div class="card-info">
+                        <h3>Organic Matter</h3>
+                        <p id="res-om">--</p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-droplet"></i></div>
+                    <div class="card-info">
+                        <h3>Moisture</h3>
+                        <p id="res-moisture">--</p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-water"></i></div>
+                    <div class="card-info">
+                        <h3>Water Retention</h3>
+                        <p id="res-water-ret">--</p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-bolt"></i></div>
+                    <div class="card-info">
+                        <h3>Salinity (EC)</h3>
+                        <p id="res-salinity">--</p>
+                    </div>
+                </div>
+                <div class="result-card">
+                    <div class="card-icon"><i class="fas fa-atom"></i></div>
+                    <div class="card-info">
+                        <h3>CEC</h3>
+                        <p id="res-cec">--</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="analysis-details-grid">
+                <div class="detail-box recommendations">
+                    <h3><i class="fas fa-wheat-awn"></i> Recommended Crops</h3>
+                    <div id="crops-list" class="crops-list">
+                        <!-- Crops will be injected here -->
+                    </div>
+                </div>
+                <div class="detail-box health-report">
+                    <h3><i class="fas fa-notes-medical"></i> Health Report</h3>
+                    <div class="report-item">
+                        <strong>Possible Deficiencies:</strong>
+                        <p id="res-deficiencies">None detected</p>
+                    </div>
+                    <div class="report-item">
+                        <strong>Fertilizer Recommendation:</strong>
+                        <p id="res-fertilizer">Balanced NPK</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="deep-analysis-section">
+                <div class="detail-box">
+                    <h3><i class="fas fa-microscope"></i> Physical & Environmental Properties</h3>
+                    <div class="properties-grid">
+                        <div class="prop-item"><span>Planting Season:</span> <span id="res-season">--</span></div>
+                        <div class="prop-item"><span>Optimal Temp:</span> <span id="res-temp">--</span></div>
+                        <div class="prop-item"><span>Drainage:</span> <span id="res-drainage">--</span></div>
+                        <div class="prop-item"><span>Compaction:</span> <span id="res-compaction">--</span></div>
+                    </div>
+                </div>
+                <div class="detail-box">
+                    <h3><i class="fas fa-vial-circle-check"></i> Micro-Nutrients</h3>
+                    <div id="micro-list" class="micro-grid">
+                        <!-- Micro digits -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="features-section animate-up">
+            <h2 class="section-title">Smart <span>Features</span></h2>
+            <div class="features-grid">
+                <div class="feature-card">
+                    <i class="fas fa-bolt"></i>
+                    <h3>Instant Results</h3>
+                    <p>Get a full analysis in under 5 seconds using parallel processing agents.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-brain"></i>
+                    <h3>Precision AI</h3>
+                    <p>Trained on 10,000+ soil samples for maximum chemical accuracy.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-mobile-screen"></i>
+                    <h3>Mobile Ready</h3>
+                    <p>Analyze your soil directly from the field with our responsive PWA UI.</p>
+                </div>
+                <div class="feature-card">
+                    <i class="fas fa-cloud-arrow-up"></i>
+                    <h3>Cloud Storage</h3>
+                    <p>Save and track your soil health history over multiple seasons.</p>
+                </div>
+            </div>
+        </section>
+
+        <section id="plans" class="pricing-section animate-up">
+            <h2 class="section-title">Our <span>Plans</span></h2>
+            <div class="pricing-grid" id="pricing-container">
+                <div style="grid-column: 1/-1; text-align: center;">Loading plans...</div>
+            </div>
+        </section>
+
+        <script>
+            async function loadPlans() {
+                const container = document.getElementById('pricing-container');
+                try {
+                    const response = await fetch('/api/api/plans');
+                    const plans = await response.json();
+
+                    if (plans.length > 0) {
+                        container.innerHTML = '';
+                        plans.forEach(plan => {
+                            const card = document.createElement('div');
+                            card.className = `pricing-card ${plan.is_featured ? 'featured' : ''}`;
+                            card.innerHTML = `
+                                ${plan.discount ? `<div class="discount-label">${plan.discount}</div>` : ''}
+                                ${plan.is_featured ? '<div class="badge">Popular</div>' : ''}
+                                <h3>${plan.name}</h3>
+                                <div class="price">
+                                    ${plan.discount ? `<span class="old-price">$${Math.round(plan.price * 1.2)}</span>` : ''}
+                                    $${plan.price}<span>/mo</span>
+                                </div>
+                                <div class="plan-description">${plan.description || ''}</div>
+                                <div class="features-html">
+                                    ${plan.features}
+                                </div>
+                                <button class="primary-btn">${plan.name === 'Enterprise' ? 'Contact Us' : 'Get Started'}</button>
+                            `;
+                            container.appendChild(card);
+                        });
+                    }
+                } catch (err) {
+                    console.error("Error loading plans:", err);
+                }
+            }
+            window.addEventListener('load', loadPlans);
+        </script>
+
+        <section id="testimonials" class="testimonials-section animate-up">
+            <h2 class="section-title">What <span>Farmers Say</span></h2>
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="user-info">
+                        <img src="https://ui-avatars.com/api/?name=Ahmed+Khan&background=00ff88&color=000" alt="User">
+                        <div>
+                            <h4>Ahmed Khan</h4>
+                            <span>Wheat Farmer</span>
+                        </div>
+                    </div>
+                    <p>"This tool saved me 30% on fertilizers this season by telling me exactly what my soil
+                        lacked."</p>
+                </div>
+                <div class="testimonial-card">
+                    <div class="user-info">
+                        <img src="https://ui-avatars.com/api/?name=Sara+Ali&background=00ff88&color=000" alt="User">
+                        <div>
+                            <h4>Sara Ali</h4>
+                            <span>Researcher</span>
+                        </div>
+                    </div>
+                    <p>"The API integration is remarkably stable. We use it for our automated greenhouse
+                        monitoring."</p>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo">
+                    <img src="assets/logo.png" alt="Soil AI Logo" class="logo-img">
+                    <span>Soil <span>AI</span></span>
+                </div>
+                <p class="mt-20">Advanced AI-powered soil analysis for precision agriculture. Empowering the future of
+                    farming.</p>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-linkedin"></i></a>
+                    <a href="#"><i class="fab fa-github"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Quick Links</h4>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="about.html">About Us</a></li>
+                    <li><a href="plans.html">Pricing Plans</a></li>
+                    <li><a href="api.html">API Docs</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="contact.html">Contact Us</a></li>
+                    <li><a href="terms.html">Terms of Service</a></li>
+                    <li><a href="/api/admin/login">Admin Login</a></li>
+                    <li><a href="contact.html">Help Center</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Newsletter</h4>
+                <p>Get the latest agriculture AI updates.</p>
+                <form class="newsletter-form">
+                    <input type="email" placeholder="Your email">
+                    <button type="button"><i class="fas fa-paper-plane"></i></button>
+                </form>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 Soil AI. All rights reserved.</p>
+            <p>Built with <i class="fas fa-heart" style="color: var(--accent-color)"></i> for Precision Farming</p>
+        </div>
+    </footer>
+
+    <script src="script.js?v=3.0"></script>
+</body>
+
+</html>

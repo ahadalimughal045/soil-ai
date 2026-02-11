@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Global Settings | Soil AI Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #05070a;
+            --accent-color: #00ff88;
+            --card-bg: rgba(20, 25, 30, 0.6);
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-color);
+            color: white;
+            margin: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            position: fixed;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            color: var(--accent-color);
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent-color);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 3rem;
+            width: 100%;
+        }
+
+        .settings-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            max-width: 600px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        input,
+        select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 12px;
+            border-radius: 12px;
+            color: white;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--accent-color);
+        }
+
+        .btn {
+            background: var(--accent-color);
+            color: black;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 12px;
+            font-weight: 800;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .logout {
+            color: #ff4444 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo"><i class="fas fa-seedling"></i> Soil AI Admin</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('admin_dashboard') }}"
+                    class="{{ 'active' if active_page == 'dashboard' else '' }}"><i class="fas fa-chart-line"></i>
+                    Dashboard</a></li>
+            <li><a href="{{ url_for('admin_users') }}" class="{{ 'active' if active_page == 'users' else '' }}"><i
+                        class="fas fa-users"></i> Users Management</a></li>
+            <li><a href="{{ url_for('admin_scans') }}" class="{{ 'active' if active_page == 'scans' else '' }}"><i
+                        class="fas fa-flask"></i> Scan History</a></li>
+            <li><a href="{{ url_for('admin_plans') }}" class="{{ 'active' if active_page == 'plans' else '' }}"><i
+                        class="fas fa-tags"></i> Pricing Plans</a></li>
+            <li><a href="{{ url_for('admin_settings') }}" class="{{ 'active' if active_page == 'settings' else '' }}"><i
+                        class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="{{ url_for('admin_logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>Engine Control Settings</h1>
+        </header>
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+        {% for message in messages %}
+        <div
+            style="background: rgba(0,255,136,0.1); color: var(--accent-color); padding: 10px; border-radius: 10px; margin-bottom: 20px; border: 1px solid var(--accent-color);">
+            {{ message }}
+        </div>
+        {% endfor %}
+        {% endif %}
+        {% endwith %}
+
+        <div class="settings-card">
+            <form method="POST">
+                <div class="form-group">
+                    <label>Maintenance Mode</label>
+                    <select name="maintenance_mode">
+                        <option value="off" {{ 'selected' if settings.maintenance_mode=='off' else '' }}>Off (Live)
+                        </option>
+                        <option value="on" {{ 'selected' if settings.maintenance_mode=='on' else '' }}>On (Under
+                            Maintenance)</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>AI Confidence Threshold (%)</label>
+                    <input type="number" name="confidence_threshold" value="{{ settings.confidence_threshold or '50' }}"
+                        min="0" max="100">
+                </div>
+                <div class="form-group">
+                    <label>Support Email Address</label>
+                    <input type="email" name="contact_email"
+                        value="{{ settings.contact_email or 'support@soilai.com' }}">
+                </div>
+                <div class="form-group">
+                    <label>Daily Scan Limit (Free Users)</label>
+                    <input type="number" name="free_scan_limit" value="{{ settings.free_scan_limit or '5' }}">
+                </div>
+                <button type="submit" class="btn">Update System Settings</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

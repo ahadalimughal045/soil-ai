@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Management | Soil AI Admin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-color: #05070a;
+            --accent-color: #00ff88;
+            --card-bg: rgba(20, 25, 30, 0.6);
+            --text-primary: #ffffff;
+            --text-secondary: #a0aec0;
+        }
+
+        body {
+            font-family: 'Outfit', sans-serif;
+            background: var(--bg-color);
+            color: white;
+            margin: 0;
+            display: flex;
+        }
+
+        .sidebar {
+            width: 250px;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.5);
+            border-right: 1px solid rgba(255, 255, 255, 0.05);
+            padding: 2rem;
+            position: fixed;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 3rem;
+            color: var(--accent-color);
+        }
+
+        .nav-links {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-links li {
+            margin-bottom: 1.5rem;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.3s;
+        }
+
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--accent-color);
+        }
+
+        .main-content {
+            margin-left: 250px;
+            padding: 3rem;
+            width: 100%;
+        }
+
+        .data-card {
+            background: var(--card-bg);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th {
+            text-align: left;
+            color: var(--text-secondary);
+            font-size: 0.8rem;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        td {
+            padding: 15px 10px;
+            font-size: 0.9rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+        }
+
+        .role-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 800;
+            background: rgba(0, 255, 136, 0.1);
+            color: var(--accent-color);
+        }
+
+        .role-badge.admin {
+            background: rgba(0, 238, 255, 0.1);
+            color: #00eeff;
+        }
+
+        .logout {
+            color: #ff4444 !important;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="sidebar">
+        <div class="logo"><i class="fas fa-seedling"></i> Soil AI Admin</div>
+        <ul class="nav-links">
+            <li><a href="{{ url_for('admin_dashboard') }}"
+                    class="{{ 'active' if active_page == 'dashboard' else '' }}"><i class="fas fa-chart-line"></i>
+                    Dashboard</a></li>
+            <li><a href="{{ url_for('admin_users') }}" class="{{ 'active' if active_page == 'users' else '' }}"><i
+                        class="fas fa-users"></i> Users Management</a></li>
+            <li><a href="{{ url_for('admin_scans') }}" class="{{ 'active' if active_page == 'scans' else '' }}"><i
+                        class="fas fa-flask"></i> Scan History</a></li>
+            <li><a href="{{ url_for('admin_plans') }}" class="{{ 'active' if active_page == 'plans' else '' }}"><i
+                        class="fas fa-tags"></i> Pricing Plans</a></li>
+            <li><a href="{{ url_for('admin_settings') }}" class="{{ 'active' if active_page == 'settings' else '' }}"><i
+                        class="fas fa-cog"></i> Settings</a></li>
+            <li><a href="{{ url_for('admin_logout') }}" class="logout"><i class="fas fa-sign-out-alt"></i> Logout</a>
+            </li>
+        </ul>
+    </div>
+
+    <div class="main-content">
+        <header>
+            <h1>User Management</h1>
+        </header>
+
+        <div class="data-card">
+            <h3>All Registered Accounts</h3>
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Role</th>
+                        <th>Joined Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr>
+                        <td>#{{ user.id }}</td>
+                        <td>{{ user.username }}</td>
+                        <td>{{ user.email }}</td>
+                        <td><span class="role-badge {{ user.role }}">{{ user.role.upper() }}</span></td>
+                        <td>{{ user.created_at.strftime('%Y-%m-%d') }}</td>
+                        <td><button style="background:none; border:none; color: #ff4444; cursor: pointer;"><i
+                                    class="fas fa-trash"></i></button></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+</html>
