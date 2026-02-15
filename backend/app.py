@@ -13,7 +13,7 @@ from PIL import Image
 from ultralytics import YOLO
 from models import db, User, Scan, SiteSetting
 
-app = Flask(__name__, static_folder='../frontend', static_url_path='')
+app = Flask(__name__)
 
 # Config
 app.config['SECRET_KEY'] = 'soil-ai-super-secret-key'
@@ -311,17 +311,5 @@ def admin_logout():
     logout_user()
     return redirect(url_for('admin_login'))
 
-from flask import send_from_directory
-
-@app.route('/')
-def serve_index():
-    return send_from_directory(app.static_folder, 'index.html')
-
-@app.route('/<path:path>')
-def serve_static(path):
-    if os.path.exists(os.path.join(app.static_folder, path)):
-        return send_from_directory(app.static_folder, path)
-    return send_from_directory(app.static_folder, 'index.html')
-
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=int(os.environ.get('PORT', 8000)))
+    app.run(host='0.0.0.0', port=8000)
